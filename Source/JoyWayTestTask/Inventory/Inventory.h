@@ -66,8 +66,8 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	int32 CurrentWeaponIndex = -1;
 
-	void AddItem(AItem* newItem);
-	void AddWeapon(AItem* newWeapon);
+	void AddItem(TWeakObjectPtr<AItem> newItem);
+	void AddWeapon(TWeakObjectPtr<AItem> newWeapon);
 
 	void SelectNextWeapon();
 	void SelectPreviousWeapon();
@@ -88,5 +88,5 @@ public:
 private:
 	void SetWeapon(FWeaponInfo Weapon);
 
-	AJoyWayTestTaskCharacter* OwnerCharacter;
+	TWeakObjectPtr<AJoyWayTestTaskCharacter> OwnerCharacter;
 };

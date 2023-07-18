@@ -5,6 +5,8 @@
 #include "Item.h"
 #include "JoyWayTestTaskCharacter.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogInventory, All, All);
+
 UInventory::UInventory()
 {
 
@@ -15,22 +17,36 @@ void UInventory::BeginPlay()
 	Super::BeginPlay();
 
 	OwnerCharacter = Cast<AJoyWayTestTaskCharacter>(GetOwner());
-
+	if (!OwnerCharacter.IsValid())
+	{
+		UE_LOG(LogInventory, Error, TEXT("Inventory owner is not valid!"));
+		return;
+	}
 	UpdateWeapon();
 }
 
-void UInventory::AddItem(AItem* newItem)
+void UInventory::AddItem(TWeakObjectPtr<AItem> newItem)
 {
+	if (!newItem.IsValid())
+	{
+		UE_LOG(LogInventory, Error, TEXT("Try to add an invalid Item!"));
+		return;
+	}
 	FItemInfo NewItem;
-	NewItem.Name = newItem->ItemID.RowName;
-	NewItem.ItemStats = *newItem->ItemID.DataTable->FindRow<FCommonItem>(NewItem.Name, "CommonItem data");
+	NewItem.Name = newItem.Get()->ItemID.RowName;
+	NewItem.ItemStats = *newItem.Get()->ItemID.DataTable->FindRow<FCommonItem>(NewItem.Name, "CommonItem data");
 	
 	Items.Add(NewItem);
 	OnItemsUpdated.Broadcast();
 }
 
-void UInventory::AddWeapon(AItem* newWeapon)
+void UInventory::AddWeapon(TWeakObjectPtr<AItem> newWeapon)
 {
+	if (!newWeapon.IsValid())
+	{
+		UE_LOG(LogInventory, Error, TEXT("Try to add an invalid Weapon!"));
+		return;
+	}
 	FWeaponInfo NewWeapon;
 	NewWeapon.Name = newWeapon->ItemID.RowName;
 	NewWeapon.WeaponStats = *newWeapon->ItemID.DataTable->FindRow<FWeaponItem>(NewWeapon.Name, "WeaponItem data");
@@ -120,11 +136,12 @@ void UInventory::UpdateWeapon()
 void UInventory::SetWeapon(FWeaponInfo Weapon)
 {
 	CurrentWeapon = Weapon.Name;
-	if (OwnerCharacter)
+	if (OwnerCharacter.IsValid())
 	{
 		OwnerCharacter->SetNewWeapon(Weapon.WeaponStats, Weapon.WeaponMesh);
 		OnAmmoChanged.Broadcast(Weapons[CurrentWeaponIndex].CurrentAmmo);
 	}
+	
 }
 
 

@@ -121,8 +121,8 @@ void AJoyWayTestTaskCharacter::OnFire()
 		if (FireAnimation != nullptr)
 		{
 			// Get the animation object for the arms mesh
-			UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-			if (AnimInstance != nullptr)
+			TWeakObjectPtr<UAnimInstance> AnimInstance = Mesh1P->GetAnimInstance();
+			if (AnimInstance.IsValid())
 			{
 				AnimInstance->Montage_Play(FireAnimation, 1.f);
 			}

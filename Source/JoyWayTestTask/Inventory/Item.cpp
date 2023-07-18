@@ -49,7 +49,7 @@ void AItem::OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.8f, FColor::White, FString::Printf(TEXT("%s "), *OtherActor->GetName()));
 	if (Cast<ACharacter>(OtherActor))
 	{
-		UInventory* InventoryComponent = Cast<UInventory>(OtherActor->GetComponentByClass(UInventory::StaticClass()));
+		TWeakObjectPtr<UInventory> InventoryComponent = Cast<UInventory>(OtherActor->GetComponentByClass(UInventory::StaticClass()));
 		if (ItemType == Common)
 		{
 			InventoryComponent->AddItem(this);
@@ -75,13 +75,13 @@ void AItem::LoadItemMesh()
 		break;
 	}
 	Path = Path + ItemID.RowName.ToString() + "." + ItemID.RowName.ToString();
-	UStaticMesh* Mesh = LoadObject<UStaticMesh>(NULL, *Path);
-	if (!Mesh)
+	TWeakObjectPtr<UStaticMesh> Mesh = LoadObject<UStaticMesh>(NULL, *Path);
+	if (!Mesh.IsValid())
 	{
 		StaticMesh->SetStaticMesh(nullptr);
 		return;
 	}
 
-	StaticMesh->SetStaticMesh(Mesh);
+	StaticMesh->SetStaticMesh(Mesh.Get());
 }
 
