@@ -1,4 +1,4 @@
-Test task for JoyWay
+Test task for JoyWay.
 Implemented mechanics (based on FPS UE4.27 template) :
 1) Collectable items. New item can be easily added in DataTable
 2) Inventory
