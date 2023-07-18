@@ -7,4 +7,5 @@ Implemented mechanics (based on FPS UE4.27 template) :
 5) Enemies, damage, respawn player on death
 
 Core made in C++
+
 Spend time ~ 7h.
